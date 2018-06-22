@@ -1,5 +1,6 @@
 package com.example.nithinjohn.tabbedscreen
 
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
@@ -17,18 +18,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewPager = findViewById(R.id.container) as ViewPager
+
+        viewPager = findViewById(R.id.container)
         setupViewPager(viewPager!!)
 
-        tabLayout = findViewById(R.id.tabs) as TabLayout
+        tabLayout = findViewById(R.id.tabs)
         tabLayout!!.setupWithViewPager(viewPager)
 
     }
 
+
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = ViewPagerAdapter(supportFragmentManager)
-        adapter.addFragment(FragmentHome(), "Home")
-        adapter.addFragment(FragmentAbout(), "About")
+        adapter.addFragment(FragmentHome(), "Phonebook")
+        adapter.addFragment(FragmentAbout(), "Dialer")
         viewPager.adapter = adapter
     }
 

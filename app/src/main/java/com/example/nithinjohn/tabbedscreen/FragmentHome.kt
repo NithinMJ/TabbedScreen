@@ -2,6 +2,7 @@ package com.example.nithinjohn.tabbedscreen
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -13,41 +14,46 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
+import android.widget.ExpandableListView
 import kotlinx.android.synthetic.main.fragmenthome.*
+import kotlinx.android.synthetic.main.fragmenthome.view.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class FragmentHome : Fragment() {
 
-    val contactList = ArrayList<Contact>()
-    val REQUEST_PERMISSION =1
-    var adapter:ContactAdapter?= null
-    var lv:ListView?=null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    var contactList = ArrayList<Contact>()
+    val REQUEST_PERMISSION = 1
+    var adapter: ExpandableListAdapter? = null
+    private var lv: ExpandableListView? = null
+    var contactMap = HashMap<String, Contact>()
+    var phoneNumberList: List<String> = ArrayList()
+    var contactNumberListSorted: HashMap<Contact,List<String>> = HashMap()
+    var lastExpandPosition: Int = -1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragmenthome, container, false)
 
-        lv = view.findViewById<ListView>(R.id.contact_list)
+        lv = view.contact_list
 
+        activity?.run {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS), REQUEST_PERMISSION)
+            } else {
+                getContacts()
+            }
+        }
 
         return view
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(ActivityCompat.checkSelfPermission(context!!, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.READ_CONTACTS), REQUEST_PERMISSION)
-        }else{
-            getContacts()
-        }
 
-        search_item?.addTextChangedListener(object : TextWatcher{
+        search_item?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 filter(s.toString())
             }
@@ -62,13 +68,33 @@ class FragmentHome : Fragment() {
 
         })
 
+
+        lv?.setOnGroupExpandListener(object : ExpandableListView.OnGroupExpandListener {
+            override fun onGroupExpand(groupPosition: Int) {
+                if (lastExpandPosition != -1 && groupPosition != lastExpandPosition) {
+                    lv!!.collapseGroup(lastExpandPosition)
+                }
+                lastExpandPosition = groupPosition
+            }
+
+        })
+
+        contact_list.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
+            val num = adapter?.getChild(groupPosition, childPosition).toString()
+//            Toast.makeText(context,num, Toast.LENGTH_SHORT).show()
+            val intent = Intent(Intent.ACTION_DIAL)
+            intent.data = Uri.parse("tel:" + num)
+            startActivity(intent)
+            true
+        }
+
     }
 
-    private  fun filter(text:String){
+    private fun filter(text: String) {
         val filterednames = ArrayList<Contact>()
 
-        for(str in contactList){
-            if(str.name.toLowerCase().contains(text.toLowerCase())){
+        for (str in contactList) {
+            if (str.name.toLowerCase().contains(text.toLowerCase())) {
                 filterednames.add(str)
             }
         }
@@ -77,57 +103,59 @@ class FragmentHome : Fragment() {
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if(requestCode == REQUEST_PERMISSION)getContacts()
+        if (requestCode == REQUEST_PERMISSION) getContacts()
     }
 
     private fun getContacts() {
-        adapter = ContactAdapter(context!!,getContactsData())
+        getContactsData()
+//        println("CONTACT LIST: $contactList")
+//
+//        println("CONTACT NUMBER LIST: $contactNumberListSorted")
+        adapter = ExpandableListAdapter(context!!, contactList,contactNumberListSorted )
 
-        lv?.adapter = adapter
+        lv?.setAdapter(adapter)
     }
 
 
     @SuppressLint("Recycle")
-    private fun getContactsData(): ArrayList<Contact> {
-
-        val contactsCursor = activity?.contentResolver?.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null)
-        if(contactsCursor?.count ?: 0 > 0){
-            while(contactsCursor != null && contactsCursor.moveToNext()){
+    private fun getContactsData() {
+        phoneNumberList= listOf("")
+        val contactsCursor = activity?.contentResolver?.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null)
+        if (contactsCursor?.count ?: 0 > 0) {
+            while (contactsCursor != null && contactsCursor.moveToNext()) {
                 val rowID = contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts._ID))
 
                 val name = contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
 
-                var phoneNumber = ""
-                if(contactsCursor.getInt(contactsCursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0){
-                    val phoneNumberCursor = activity?.contentResolver?.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "= ?",
-                            arrayOf<String>(rowID),
-                            null
+                val photoUriString = contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI))
+
+                val phoneNumber = contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+
+                if (contactMap.containsKey(name)) {
+                    contactMap[name]?.phoneNumbers?.add(phoneNumber)
+                } else {
+                    contactMap.put(
+                            name,
+                            Contact(
+                                    name = name,
+                                    photo = if (!photoUriString.isNullOrEmpty()) Uri.parse(photoUriString) else null,
+                                    phoneNumbers = mutableListOf(phoneNumber)
+                            )
                     )
-                    while(phoneNumberCursor?.moveToNext()!!){
-                        phoneNumber += phoneNumberCursor.getString(
-                                phoneNumberCursor.getColumnIndex((ContactsContract.CommonDataKinds.Phone.NUMBER))
-                        ) + "\n"
-                    }
+                    val re = Regex("[^\\d+]")
 
-                    phoneNumberCursor.close()
+                    phoneNumberList += re.replace(phoneNumber,"")
                 }
-
-
-                val contactPhotoUri : Uri? = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI,rowID)
-                println("CONTACT PHOTO URI : $contactPhotoUri")
-                contactList.add(Contact(name, phoneNumber,contactPhotoUri))
-
+                contactNumberListSorted.put(contactMap[name]!!,phoneNumberList.dropWhile { it == "" })
             }
         }
-        contactsCursor?.close()
-        contactList.sortWith(compareBy { it.name })
+//        println("PHONE NUMBER LIST : $phoneNumberList")
+        contactList = ArrayList(contactMap.values)
+        contactList = ArrayList(contactList.sortedWith(compareBy { it.name }))
         println("CONTACT LIST: $contactList")
-        return contactList
+//        println("CONTACT MAP : $contactMap")
+        println("CONTACT NUMBER LIST SORTED: $contactNumberListSorted")
+        contactsCursor?.close()
+
     }
-
-
-
 }
