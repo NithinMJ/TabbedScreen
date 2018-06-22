@@ -17,9 +17,6 @@ import android.view.ViewGroup
 import android.widget.ExpandableListView
 import kotlinx.android.synthetic.main.fragmenthome.*
 import kotlinx.android.synthetic.main.fragmenthome.view.*
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 class FragmentHome : Fragment() {
@@ -30,7 +27,7 @@ class FragmentHome : Fragment() {
     private var lv: ExpandableListView? = null
     var contactMap = HashMap<String, Contact>()
     var phoneNumberList: List<String> = ArrayList()
-    var contactNumberListSorted: HashMap<Contact,List<String>> = HashMap()
+    var contactNumberListSorted: HashMap<Contact, List<String>> = HashMap()
     var lastExpandPosition: Int = -1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -111,7 +108,7 @@ class FragmentHome : Fragment() {
 //        println("CONTACT LIST: $contactList")
 //
 //        println("CONTACT NUMBER LIST: $contactNumberListSorted")
-        adapter = ExpandableListAdapter(context!!, contactList,contactNumberListSorted )
+        adapter = ExpandableListAdapter(context!!, contactList, contactNumberListSorted)
 
         lv?.setAdapter(adapter)
     }
@@ -119,7 +116,7 @@ class FragmentHome : Fragment() {
 
     @SuppressLint("Recycle")
     private fun getContactsData() {
-        phoneNumberList= listOf("")
+        phoneNumberList = listOf("")
         val contactsCursor = activity?.contentResolver?.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null)
         if (contactsCursor?.count ?: 0 > 0) {
             while (contactsCursor != null && contactsCursor.moveToNext()) {
@@ -144,14 +141,13 @@ class FragmentHome : Fragment() {
                     )
                     val re = Regex("[^\\d+]")
 
-                    phoneNumberList += re.replace(phoneNumber,"")
+                    phoneNumberList += re.replace(phoneNumber, "")
                 }
-                contactNumberListSorted.put(contactMap[name]!!,phoneNumberList.dropWhile { it == "" })
+                contactNumberListSorted.put(contactMap[name]!!, phoneNumberList.dropWhile { it == "" })
             }
         }
 //        println("PHONE NUMBER LIST : $phoneNumberList")
-        contactList = ArrayList(contactMap.values)
-        contactList = ArrayList(contactList.sortedWith(compareBy { it.name }))
+        contactList = ArrayList((contactMap.values).sortedWith(compareBy { it.name }))
         println("CONTACT LIST: $contactList")
 //        println("CONTACT MAP : $contactMap")
         println("CONTACT NUMBER LIST SORTED: $contactNumberListSorted")
