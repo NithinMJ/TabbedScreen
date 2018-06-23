@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import kotlin.jvm.java
 
 class SplashActivity : Activity() {
 
@@ -11,12 +12,10 @@ class SplashActivity : Activity() {
     override fun onCreate(savedInstanceState:Bundle) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        Handler().postDelayed(object:Runnable {
-            override fun run() {
-                val i = Intent(this@SplashActivity, MainActivity::class.java)
-                startActivity(i)
-                finish()
-            }
+        Handler().postDelayed({
+            val i = Intent(this@SplashActivity, MainActivity::class.java)
+            startActivity(i)
+            finish()
         }, SPLASH_TIME_OUT)
     }
 }

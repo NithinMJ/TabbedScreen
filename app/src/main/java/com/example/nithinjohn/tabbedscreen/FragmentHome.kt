@@ -105,9 +105,7 @@ class FragmentHome : Fragment() {
 
     private fun getContacts() {
         getContactsData()
-//        println("CONTACT LIST: $contactList")
-//
-//        println("CONTACT NUMBER LIST: $contactNumberListSorted")
+
         adapter = ExpandableListAdapter(context!!, contactList, contactNumberListSorted)
 
         lv?.setAdapter(adapter)
@@ -139,18 +137,22 @@ class FragmentHome : Fragment() {
                                     phoneNumbers = mutableListOf(phoneNumber)
                             )
                     )
-                    val re = Regex("[^\\d+]")
-
-                    phoneNumberList += re.replace(phoneNumber, "")
                 }
-                contactNumberListSorted.put(contactMap[name]!!, phoneNumberList.dropWhile { it == "" })
             }
         }
-//        println("PHONE NUMBER LIST : $phoneNumberList")
-        contactList = ArrayList((contactMap.values).sortedWith(compareBy { it.name }))
-        println("CONTACT LIST: $contactList")
-//        println("CONTACT MAP : $contactMap")
-        println("CONTACT NUMBER LIST SORTED: $contactNumberListSorted")
+        contactMap.forEach{
+            (key,value) ->
+            println("KEY : $key   VALUE: " +value)
+            contactList.add(value)
+
+
+            val phNum = value.phoneNumbers.toSet().toList()
+
+            contactNumberListSorted.put(value, phNum.dropWhile { it == "" })
+        }
+        contactList = ArrayList(contactList.sortedBy { it.name })
+//        println("CONTACT LIST: $contactList")
+//        println("CONTACT NUMBER LIST SORTED: $contactNumberListSorted")
         contactsCursor?.close()
 
     }
