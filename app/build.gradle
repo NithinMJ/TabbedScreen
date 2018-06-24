@@ -4,8 +4,14 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+repositories {
+    mavenCentral()
+    google()
+}
+
 android {
     compileSdkVersion 27
+//    buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "com.example.nithinjohn.tabbedscreen"
         minSdkVersion 15
@@ -28,8 +34,8 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:animated-vector-drawable:27.1.1'
     implementation 'com.android.support:exifinterface:27.1.1'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.10'
-    implementation 'org.jetbrains.anko:anko-common:0.9'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
