@@ -15,16 +15,38 @@
         android:paddingTop="@dimen/appbar_padding_top"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:contentDescription="@string/app_name"
-            android:paddingBottom="5dp"
-            android:paddingEnd="15dp"
-            android:paddingStart="15dp"
-            android:paddingTop="5dp"
-            android:src="@drawable/ic_back" />
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:id="@+id/backbutton"
+                android:contentDescription="@string/app_name"
+                android:paddingBottom="5dp"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"
+                android:paddingTop="5dp"
+                android:src="@drawable/ic_back" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/signout"
+                android:text="@string/sign_out"
+                android:paddingBottom="5dp"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"
+                android:paddingTop="5dp"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_weight="3"
+                android:gravity="end"
+                android:layout_gravity="center"/>
+        </LinearLayout>
 
 
         <android.support.design.widget.TabLayout

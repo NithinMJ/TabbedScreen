@@ -34,7 +34,7 @@ class Loader : AppCompatActivity() {
                 .into(img)
 
         Handler().postDelayed({
-            val i = Intent(this@Loader, MainActivity::class.java)
+            val i = Intent(this@Loader, LoginActivity::class.java)
             startActivity(i)
             finish()
         }, SPLASH_TIME_OUT)

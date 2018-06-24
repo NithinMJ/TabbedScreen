@@ -12,4 +12,14 @@
     <string name="topup">Who do you want to call?</string>
     <string name="search">Search</string>
     <string name="contact_name">Contact Name</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="email">Email</string>
+    <string name="next">Next</string>
+    <string name="Terms">By continuing, you allow us to use your information in accordance with our Terms &amp; Conditions and Privacy Notice.</string>
+    <string name="new_here_sign_up_here">New Here? Sign up here</string>
+    <string name="join_to_continue">Join to continue</string>
+    <string name="checkbox">I\'d like to receive the latest promotions, exclusive deals and other news.</string>
+    <string name="existing">Existing Customer? Log in here</string>
+    <string name="password">Password</string>
+    <string name="sign_out">Sign Out</string>
 </resources>
