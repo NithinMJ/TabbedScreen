@@ -29,6 +29,7 @@ class FragmentHome : Fragment() {
     var phoneNumberList: List<String> = ArrayList()
     var contactNumberListSorted: HashMap<Contact, List<String>> = HashMap()
     var lastExpandPosition: Int = -1
+    var phNum: List<String> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragmenthome, container, false)
@@ -64,7 +65,6 @@ class FragmentHome : Fragment() {
             }
 
         })
-
 
         lv?.setOnGroupExpandListener(object : ExpandableListView.OnGroupExpandListener {
             override fun onGroupExpand(groupPosition: Int) {
@@ -140,15 +140,16 @@ class FragmentHome : Fragment() {
                 }
             }
         }
-        contactMap.forEach{
-            (key,value) ->
-            println("KEY : $key   VALUE: " +value)
+        contactMap.forEach { (key, value) ->
+            println("KEY : $key   VALUE: " + value)
             contactList.add(value)
+            phNum = listOf()
+            value.phoneNumbers.forEach {
+                val re = Regex("[^\\d+]")
+                phNum += re.replace(it, "")
+            }
 
-
-            val phNum = value.phoneNumbers.toSet().toList()
-
-            contactNumberListSorted.put(value, phNum.dropWhile { it == "" })
+            contactNumberListSorted.put(value, phNum.toSet().toList())
         }
         contactList = ArrayList(contactList.sortedBy { it.name })
 //        println("CONTACT LIST: $contactList")

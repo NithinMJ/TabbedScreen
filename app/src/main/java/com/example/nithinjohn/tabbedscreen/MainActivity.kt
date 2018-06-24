@@ -1,6 +1,5 @@
 package com.example.nithinjohn.tabbedscreen
 
-import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
