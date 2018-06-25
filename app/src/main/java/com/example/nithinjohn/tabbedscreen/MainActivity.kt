@@ -1,6 +1,6 @@
 package com.example.nithinjohn.tabbedscreen
 
-import android.os.AsyncTask
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
@@ -8,23 +8,43 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
+    private var mAuth: FirebaseAuth? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
+        mAuth = FirebaseAuth.getInstance()
         viewPager = findViewById(R.id.container)
         setupViewPager(viewPager!!)
 
         tabLayout = findViewById(R.id.tabs)
         tabLayout!!.setupWithViewPager(viewPager)
 
+
+        backbutton.setOnClickListener {
+            val intent = Intent(this@MainActivity, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
+        signout.setOnClickListener {
+            signOut()
+        }
+
+    }
+
+    private fun signOut() {
+        mAuth!!.signOut()
+        val intent = Intent(this@MainActivity, LoginActivity::class.java)
+        startActivity(intent)
     }
 
 
