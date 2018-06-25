@@ -14,8 +14,8 @@ import kotlinx.android.synthetic.main.activity_loader.*
 
 class Loader : AppCompatActivity() {
 
-    private val SPLASH_TIME_OUT = 5000L
-    val REQUEST_PERMISSION = 1
+    private val splash = 5000L
+    private val requestpermission = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -24,7 +24,7 @@ class Loader : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS), REQUEST_PERMISSION)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS), requestpermission)
         }
 
         setContentView(R.layout.activity_loader)
@@ -37,7 +37,7 @@ class Loader : AppCompatActivity() {
             val i = Intent(this@Loader, LoginActivity::class.java)
             startActivity(i)
             finish()
-        }, SPLASH_TIME_OUT)
+        }, splash)
     }
 }
 

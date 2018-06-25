@@ -8,7 +8,6 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_forgot_password.*
 
-const val TAG: String = "TAG"
 
 class ForgotPassword : AppCompatActivity() {
 
@@ -27,10 +26,11 @@ class ForgotPassword : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Email Link sent to reset password", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this@ForgotPassword, LoginActivity::class.java)
                     startActivity(intent)
+                }else{
+                    Toast.makeText(applicationContext, "Account does not exist !", Toast.LENGTH_SHORT).show()
                 }
             }
         }
-
     }
 
     override fun onBackPressed() {

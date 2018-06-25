@@ -25,4 +25,9 @@
     <string name="facebook_app_id">182442762436643</string>
     <string name="fb_login_protocol_scheme">fb182442762436643</string>
     <string name="request_client_id">67790666737-n4scneo90sg83ephbqus2unrfvq3vmkm.apps.googleusercontent.com</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="please_enter_your_email_address">Please enter your email address</string>
+    <string name="reset">Reset</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="login">Login</string>
 </resources>

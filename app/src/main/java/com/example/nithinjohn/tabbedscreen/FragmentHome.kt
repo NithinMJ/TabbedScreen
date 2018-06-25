@@ -141,7 +141,7 @@ class FragmentHome : Fragment() {
             }
         }
         contactMap.forEach { (key, value) ->
-            println("KEY : $key   VALUE: " + value)
+            println("KEY : $key   VALUE: $value")
             contactList.add(value)
             phNum = listOf()
             value.phoneNumbers.forEach {

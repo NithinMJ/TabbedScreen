@@ -10,17 +10,17 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.facebook.login.LoginManager
-import com.facebook.login.widget.LoginButton
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_main.*
+
+const val TAG: String = "TAG"
 
 class MainActivity : AppCompatActivity() {
 
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
     private var mAuth: FirebaseAuth? = null
-    internal var lastPress: Long = 0
+    private var lastPress: Long = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

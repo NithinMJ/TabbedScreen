@@ -58,10 +58,20 @@
             android:background="@color/colorAccent"
             android:clickable="true"
             android:focusable="true"
-            android:text="@string/next"
+            android:text="@string/login"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:id="@+id/forgot_password"
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:text="@string/forgot_password"/>
 
         <TextView
             android:layout_width="match_parent"
