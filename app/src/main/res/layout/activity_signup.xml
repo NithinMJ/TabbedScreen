@@ -93,6 +93,33 @@
             android:textSize="10sp"
             tools:ignore="SmallSp" />
 
+        <com.facebook.login.widget.LoginButton
+            xmlns:facebook="http://schemas.android.com/apk/res-auto"
+            facebook:com_facebook_login_text="Continue"
+            facebook:com_facebook_logout_text="Continue"
+            android:textSize="13sp"
+            android:layout_gravity="center"
+            android:id="@+id/fb_signup_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/google_signup_button"
+            android:layout_gravity="center"
+            android:layout_width="150dp"
+            android:textAlignment="center"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
+
+
+
     </LinearLayout>
 
     <LinearLayout

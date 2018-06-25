@@ -8,7 +8,11 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
+import com.facebook.login.LoginManager
+import com.facebook.login.widget.LoginButton
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -16,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
     private var mAuth: FirebaseAuth? = null
+    internal var lastPress: Long = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,8 +46,24 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastPress > 5000) {
+            val backpressToast: Toast? = Toast.makeText(baseContext, "Do you want to log out?", Toast.LENGTH_SHORT)
+            backpressToast?.show()
+            lastPress = currentTime
+
+        } else {
+            super.onBackPressed()
+            //Exit Application on back press instead of moving to the first Activity
+            signOut()
+        }
+    }
+
     private fun signOut() {
         mAuth!!.signOut()
+        LoginManager.getInstance().logOut()
+        Toast.makeText(applicationContext, "Sign Out Success !!", Toast.LENGTH_SHORT).show()
         val intent = Intent(this@MainActivity, LoginActivity::class.java)
         startActivity(intent)
     }
