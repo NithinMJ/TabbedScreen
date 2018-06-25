@@ -10,6 +10,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Window
 import android.view.WindowManager
 import com.bumptech.glide.Glide
+import com.crashlytics.android.Crashlytics
+import com.example.nithinjohn.tabbedscreen.R.id.img
+import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_loader.*
 
 class Loader : AppCompatActivity() {
@@ -18,6 +21,7 @@ class Loader : AppCompatActivity() {
     private val requestpermission = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Fabric.with(this, Crashlytics())
 
         this.requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,

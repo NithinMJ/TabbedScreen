@@ -54,6 +54,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ForgotPassword"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="0c423cfb9a57c0d6420e42cc704590fd5de7d57b"
+            />
     </application>
 
 </manifest>
