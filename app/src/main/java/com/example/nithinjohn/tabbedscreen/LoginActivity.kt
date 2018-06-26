@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.nithinjohn.tabbedscreen
 
 import android.content.Intent
