@@ -21,7 +21,6 @@ class ContactAdapter(val context: Context, var contactList: ArrayList<Contact>) 
         view.contact_name.text = contactList[position].name
         val drawable: TextDrawable? = getTextDrawableBuilder()?.buildRound(getNameLetters(contactList[position].name), Color.DKGRAY)
 
-//        val drawable:TextDrawable = TextDrawable.builder().buildRound("A",Color.BLACK)
         Picasso.get().load(contactList[position].photo).placeholder(drawable!!).into(view.contact_photo)
 
         return view

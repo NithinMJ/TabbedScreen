@@ -15,7 +15,6 @@ import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FacebookAuthProvider
@@ -111,7 +110,7 @@ class LoginActivity : AppCompatActivity() {
             Log.i(TAG, "With Google LogIn, is result a success? ${result.isSuccess}.")
             if (result.isSuccess) {
                 // Google Sign In was successful, authenticate with Firebase
-                val account:GoogleSignInAccount = task.result
+                val account: GoogleSignInAccount = task.result
                 firebaseAuthWithGoogle(account)
                 Toast.makeText(applicationContext, "Google Login Success !!", Toast.LENGTH_SHORT).show()
             } else {

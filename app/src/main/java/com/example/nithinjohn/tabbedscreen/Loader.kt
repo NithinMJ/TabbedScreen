@@ -11,7 +11,6 @@ import android.view.Window
 import android.view.WindowManager
 import com.bumptech.glide.Glide
 import com.crashlytics.android.Crashlytics
-import com.example.nithinjohn.tabbedscreen.R.id.img
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_loader.*
 

@@ -26,7 +26,7 @@ class ForgotPassword : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Email Link sent to reset password", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this@ForgotPassword, LoginActivity::class.java)
                     startActivity(intent)
-                }else{
+                } else {
                     Toast.makeText(applicationContext, "Account does not exist !", Toast.LENGTH_SHORT).show()
                 }
             }

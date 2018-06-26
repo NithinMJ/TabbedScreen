@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -18,23 +19,20 @@ import android.widget.ExpandableListView
 import kotlinx.android.synthetic.main.fragmenthome.*
 import kotlinx.android.synthetic.main.fragmenthome.view.*
 
-
 class FragmentHome : Fragment() {
 
-    var contactList = ArrayList<Contact>()
+    companion object {
+        var listOfContacts = ArrayList<Contact>()
+    }
     val REQUEST_PERMISSION = 1
     var adapter: ExpandableListAdapter? = null
     private var lv: ExpandableListView? = null
-    var contactMap = HashMap<String, Contact>()
-    var phoneNumberList: List<String> = ArrayList()
-    var contactNumberListSorted: HashMap<Contact, List<String>> = HashMap()
     var lastExpandPosition: Int = -1
-    var phNum: List<String> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragmenthome, container, false)
-
         lv = view.contact_list
+        lv?.setGroupIndicator(null)
 
         activity?.run {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -66,15 +64,12 @@ class FragmentHome : Fragment() {
 
         })
 
-        lv?.setOnGroupExpandListener(object : ExpandableListView.OnGroupExpandListener {
-            override fun onGroupExpand(groupPosition: Int) {
-                if (lastExpandPosition != -1 && groupPosition != lastExpandPosition) {
-                    lv!!.collapseGroup(lastExpandPosition)
-                }
-                lastExpandPosition = groupPosition
+        lv?.setOnGroupExpandListener { groupPosition ->
+            if (lastExpandPosition != -1 && groupPosition != lastExpandPosition) {
+                lv!!.collapseGroup(lastExpandPosition)
             }
-
-        })
+            lastExpandPosition = groupPosition
+        }
 
         contact_list.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
             val num = adapter?.getChild(groupPosition, childPosition).toString()
@@ -90,7 +85,7 @@ class FragmentHome : Fragment() {
     private fun filter(text: String) {
         val filterednames = ArrayList<Contact>()
 
-        for (str in contactList) {
+        for (str in listOfContacts) {
             if (str.name.toLowerCase().contains(text.toLowerCase())) {
                 filterednames.add(str)
             }
@@ -104,57 +99,11 @@ class FragmentHome : Fragment() {
     }
 
     private fun getContacts() {
-        getContactsData()
-
-        adapter = ExpandableListAdapter(context!!, contactList, contactNumberListSorted)
+        val contactsCursor = activity?.contentResolver?.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null)
+        adapter = ExpandableListAdapter(context!!, ContactReceiver.getContactsData(contactsCursor))
 
         lv?.setAdapter(adapter)
     }
 
 
-    @SuppressLint("Recycle")
-    private fun getContactsData() {
-        phoneNumberList = listOf("")
-        val contactsCursor = activity?.contentResolver?.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null)
-        if (contactsCursor?.count ?: 0 > 0) {
-            while (contactsCursor != null && contactsCursor.moveToNext()) {
-                val rowID = contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts._ID))
-
-                val name = contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
-
-                val photoUriString = contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI))
-
-                val phoneNumber = contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-
-                if (contactMap.containsKey(name)) {
-                    contactMap[name]?.phoneNumbers?.add(phoneNumber)
-                } else {
-                    contactMap.put(
-                            name,
-                            Contact(
-                                    name = name,
-                                    photo = if (!photoUriString.isNullOrEmpty()) Uri.parse(photoUriString) else null,
-                                    phoneNumbers = mutableListOf(phoneNumber)
-                            )
-                    )
-                }
-            }
-        }
-        contactMap.forEach { (key, value) ->
-            println("KEY : $key   VALUE: $value")
-            contactList.add(value)
-            phNum = listOf()
-            value.phoneNumbers.forEach {
-                val re = Regex("[^\\d+]")
-                phNum += re.replace(it, "")
-            }
-
-            contactNumberListSorted.put(value, phNum.toSet().toList())
-        }
-        contactList = ArrayList(contactList.sortedBy { it.name })
-//        println("CONTACT LIST: $contactList")
-//        println("CONTACT NUMBER LIST SORTED: $contactNumberListSorted")
-        contactsCursor?.close()
-
-    }
 }

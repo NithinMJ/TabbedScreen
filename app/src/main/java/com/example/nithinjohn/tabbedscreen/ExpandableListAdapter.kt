@@ -10,10 +10,10 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.contact_data.view.*
 import kotlinx.android.synthetic.main.contact_number.view.*
-import java.util.*
 
-class ExpandableListAdapter(val context: Context, var contactList: ArrayList<Contact>, var contactNumber: HashMap<Contact, List<String>>) : BaseExpandableListAdapter() {
-
+class ExpandableListAdapter(val context: Context, ContactData: Pair<ArrayList<Contact>, HashMap<Contact, List<String>>>) : BaseExpandableListAdapter() {
+    private var contactList = ContactData.first
+    private var contactNumber = ContactData.second
     override fun getGroup(groupPosition: Int): Any {
         return contactList[groupPosition]
     }
@@ -84,11 +84,7 @@ class ExpandableListAdapter(val context: Context, var contactList: ArrayList<Con
     }
 
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {
-        var titleNumber = getChild(groupPosition, childPosition) as String
-        val re = Regex("[^\\d+]")
-
-        titleNumber = re.replace(titleNumber, "")
-
+        val titleNumber = getChild(groupPosition, childPosition) as String
 
         val viewNumber: View = LayoutInflater.from(context).inflate(R.layout.contact_number, parent, false)
 
