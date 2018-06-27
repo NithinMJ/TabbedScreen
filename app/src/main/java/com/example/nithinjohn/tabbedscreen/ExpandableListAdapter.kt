@@ -2,6 +2,7 @@ package com.example.nithinjohn.tabbedscreen
 
 import android.content.Context
 import android.graphics.Color
+import android.support.annotation.ColorInt
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,11 +29,16 @@ class ExpandableListAdapter(val context: Context, ContactData: Pair<ArrayList<Co
 
     override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup?): View {
 
+        val drawable: TextDrawable?
         val titleName = contactList[groupPosition].name
         val viewTitle: View = LayoutInflater.from(context).inflate(R.layout.contact_data, parent, false)
         viewTitle.contact_name.text = titleName
 
-        val drawable: TextDrawable? = getTextDrawableBuilder()?.buildRound(getNameLetters(titleName), Color.DKGRAY)
+        drawable = when {
+            groupPosition % 3 == 0 -> getTextDrawableBuilder()?.buildRound(getNameLetters(titleName), Color.parseColor("#1B3C7E"))
+            groupPosition % 2 == 0 -> getTextDrawableBuilder()?.buildRound(getNameLetters(titleName), Color.parseColor("#0DD391"))
+            else -> getTextDrawableBuilder()?.buildRound(getNameLetters(titleName), Color.parseColor("#EACC0E"))
+        }
         Picasso.get().load(contactList[groupPosition].photo).placeholder(drawable!!).into(viewTitle.contact_photo)
 
         return viewTitle

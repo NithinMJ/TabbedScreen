@@ -34,12 +34,6 @@ class MainActivity : AppCompatActivity() {
         tabLayout = findViewById(R.id.tabs)
         tabLayout!!.setupWithViewPager(viewPager)
 
-
-        backbutton.setOnClickListener {
-            val intent = Intent(this@MainActivity, LoginActivity::class.java)
-            startActivity(intent)
-        }
-
         signout.setOnClickListener {
             signOut()
         }
@@ -55,7 +49,6 @@ class MainActivity : AppCompatActivity() {
 
         } else {
             super.onBackPressed()
-            //Exit Application on back press instead of moving to the first Activity
             signOut()
         }
     }

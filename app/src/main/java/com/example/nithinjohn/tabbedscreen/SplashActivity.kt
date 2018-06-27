@@ -13,11 +13,10 @@ import com.bumptech.glide.Glide
 import com.crashlytics.android.Crashlytics
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_loader.*
-
+const val requestpermission = 1
 class SplashActivity : AppCompatActivity() {
 
     private val splash = 5000L
-    private val requestpermission = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Fabric.with(this, Crashlytics())

@@ -29,6 +29,7 @@ class LoginActivity : AppCompatActivity() {
     private var lastPress: Long = 0
     private var mAuth: FirebaseAuth? = null
     private var callbackManager: CallbackManager? = null
+    var currentUser: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,13 +77,13 @@ class LoginActivity : AppCompatActivity() {
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build()
 
-        goto_signup.setOnClickListener {
-            val intent = Intent(this@LoginActivity, SignupActivity::class.java)
-            startActivity(intent)
-        }
-
         login_btn.setOnClickListener {
-            signIn(username.text.toString(), password.text.toString())
+            currentUser = mAuth?.currentUser
+            if (currentUser != null) {
+                signIn(username.text.toString(), password.text.toString())
+            } else {
+                createAccount(username.text.toString(), password.text.toString())
+            }
         }
 
         google_signin_button.setOnClickListener {
@@ -154,11 +155,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val currentUser: FirebaseUser? = mAuth?.currentUser
+        currentUser = mAuth?.currentUser
         if (currentUser != null) {
             val intent = Intent(this@LoginActivity, MainActivity::class.java)
             startActivity(intent)
-
         }
     }
 
@@ -201,6 +201,27 @@ class LoginActivity : AppCompatActivity() {
                     }
 
                     if (!task.isSuccessful) {
+                        Toast.makeText(applicationContext, "Authentication failed!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+    }
+
+    private fun createAccount(email: String, password: String) {
+        Log.e(TAG, "createAccount:$email")
+        if (!validateForm(email, password)) {
+            return
+        }
+
+        mAuth!!.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        Log.e(TAG, "createAccount: Success!")
+
+                        Toast.makeText(applicationContext, "Sign Up Success !!", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        Log.e(TAG, "createAccount: Fail!", task.exception)
                         Toast.makeText(applicationContext, "Authentication failed!", Toast.LENGTH_SHORT).show()
                     }
                 }
