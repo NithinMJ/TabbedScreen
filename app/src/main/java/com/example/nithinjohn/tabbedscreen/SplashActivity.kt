@@ -14,7 +14,7 @@ import com.crashlytics.android.Crashlytics
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_loader.*
 
-class Loader : AppCompatActivity() {
+class SplashActivity : AppCompatActivity() {
 
     private val splash = 5000L
     private val requestpermission = 1
@@ -37,7 +37,7 @@ class Loader : AppCompatActivity() {
                 .into(img)
 
         Handler().postDelayed({
-            val i = Intent(this@Loader, LoginActivity::class.java)
+            val i = Intent(this@SplashActivity, LoginActivity::class.java)
             startActivity(i)
             finish()
         }, splash)
