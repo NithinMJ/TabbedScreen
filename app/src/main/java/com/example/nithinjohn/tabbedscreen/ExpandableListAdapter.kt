@@ -2,7 +2,6 @@ package com.example.nithinjohn.tabbedscreen
 
 import android.content.Context
 import android.graphics.Color
-import android.support.annotation.ColorInt
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,8 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.contact_data.view.*
 import kotlinx.android.synthetic.main.contact_number.view.*
 
-class ExpandableListAdapter(val context: Context, ContactData: Pair<ArrayList<Contact>, HashMap<Contact, List<String>>>) : BaseExpandableListAdapter() {
+val fetchTextDrawable = FetchTextDrawable()
+class ExpandableListAdapter(private val context: Context, ContactData: Pair<ArrayList<Contact>, HashMap<Contact, List<String>>>) : BaseExpandableListAdapter() {
     private var contactList = ContactData.first
     private var contactNumber = ContactData.second
     override fun getGroup(groupPosition: Int): Any {
@@ -35,9 +35,9 @@ class ExpandableListAdapter(val context: Context, ContactData: Pair<ArrayList<Co
         viewTitle.contact_name.text = titleName
 
         drawable = when {
-            groupPosition % 3 == 0 -> getTextDrawableBuilder()?.buildRound(getNameLetters(titleName), Color.parseColor("#1B3C7E"))
-            groupPosition % 2 == 0 -> getTextDrawableBuilder()?.buildRound(getNameLetters(titleName), Color.parseColor("#0DD391"))
-            else -> getTextDrawableBuilder()?.buildRound(getNameLetters(titleName), Color.parseColor("#EACC0E"))
+            groupPosition % 3 == 0 -> fetchTextDrawable.getTextDrawableBuilder()?.buildRound(fetchTextDrawable.getNameLetters(titleName), Color.parseColor("#1B3C7E"))
+            groupPosition % 2 == 0 -> fetchTextDrawable.getTextDrawableBuilder()?.buildRound(fetchTextDrawable.getNameLetters(titleName), Color.parseColor("#0DD391"))
+            else -> fetchTextDrawable.getTextDrawableBuilder()?.buildRound(fetchTextDrawable.getNameLetters(titleName), Color.parseColor("#EACC0E"))
         }
         Picasso.get().load(contactList[groupPosition].photo).placeholder(drawable!!).into(viewTitle.contact_photo)
 
@@ -49,40 +49,13 @@ class ExpandableListAdapter(val context: Context, ContactData: Pair<ArrayList<Co
         notifyDataSetChanged()
     }
 
-    private var textDrawableBuilder: TextDrawable.IShapeBuilder? = null
-
-    fun getTextDrawableBuilder(): TextDrawable.IShapeBuilder? {
-        if (textDrawableBuilder == null) {
-            textDrawableBuilder = TextDrawable.builder().beginConfig().fontSize(14).bold().width(50).height(50).endConfig()
-        }
-        return textDrawableBuilder
-    }
-
-    fun getNameLetters(contactName: String): String {
-        if (contactName.isEmpty()) {
-            return "#"
-        } else if (contactName.matches("-?\\d+(\\.\\d+)?".toRegex())) {
-            return "#"
-        }
-
-        val strings = contactName.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        val nameLetters = StringBuilder()
-        for (s in strings) {
-            if (nameLetters.length >= 2)
-                return nameLetters.toString().capitalize()
-            if (!s.isEmpty()) {
-                nameLetters.append(s.trim { it <= ' ' }[0])
-            }
-        }
-        return nameLetters.toString().capitalize()
-    }
 
     override fun getChildrenCount(groupPosition: Int): Int {
-        return contactNumber.get(contactList[groupPosition])!!.size
+        return contactNumber[contactList[groupPosition]]!!.size
     }
 
     override fun getChild(groupPosition: Int, childPosition: Int): Any {
-        return contactNumber.get(contactList[groupPosition])!![childPosition]
+        return contactNumber[contactList[groupPosition]]!![childPosition]
     }
 
     override fun getGroupId(groupPosition: Int): Long {
